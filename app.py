@@ -1,4 +1,5 @@
 import pandas as pd
+import  Config
 import requests
 from bs4 import BeautifulSoup as bs
 from flask import Flask, jsonify
@@ -213,6 +214,18 @@ def todays_high_move_stocks():
         stock_list = data["data"]
         print(stock_list)
     return jsonify(stock_list)
+
+@app.route('/api/SendTelegramAlert/<string:bot_message>', methods=['GET'])
+def telegram_bot_sendtext(bot_message):
+    try:
+        bot_message = bot_message.replace('&','')
+        send_text = 'https://api.telegram.org/bot' + Config.BOT_TOKEN + '/sendMessage?chat_id=' + Config.Group_ID + '&parse_mode=HTML&text=' + bot_message
+        res = requests.get(send_text)
+        return "Msg Sent Successfully"
+        #print(f'Telegram response : {res.json()}')
+    except Exception as e:
+        print(f'Error in sending Telegram msg {e}')
+        return "Error"
 
 if __name__ == '__main__':
     app.run()

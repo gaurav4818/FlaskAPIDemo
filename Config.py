@@ -1,0 +1,3 @@
+BOT_TOKEN = '6459094646:AAEO9oWBgpUPyDYBK5c25vPYKP_xikALKAw'    
+BOT_CHAT_ID ='828173725'
+Group_ID = '@stock_alert_system'
