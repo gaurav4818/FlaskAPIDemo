@@ -47,6 +47,20 @@ def get_long_intraday_stock_scanner_data():
         print(stock_list)
     return jsonify(stock_list)
 
+@app.route('/api/ShortStockLiveIntraday', methods=['GET'])
+def get_short_intraday_stock_scanner_data():
+    url = "https://chartink.com/screener/process"
+    condition = {"scan_clause": "( {33489} ( latest volume > 10000 and latest close > 50 and 1 day ago close - 1 candle ago close / 1 candle ago close * 100 > -5 and latest close / latest low <= 1.003 and latest close <= 1 day ago low and( [0] 5 minute sma( [0] 5 minute volume , 4 ) - latest sma( 2 days ago volume / 75 , 5 ) ) / 2 days ago sma( latest volume , 75 ) * 100 > 0 and( {33489} ( [0] 5 minute close - [0] 5 minute open / [0] 5 minute open * 100 > -0.05 or [-1] 5 minute close - [-1] 5 minute open / [-1] 5 minute open * 100 > -0.05 or [-2] 5 minute close - [-2] 5 minute open / [-2] 5 minute open * 100 > -0.05 ) ) ) )" } 
+    with requests.session() as s:
+        r_data = s.get(url)
+        soup = bs(r_data.content, "lxml")
+        meta = soup.find("meta", {"name" : "csrf-token"})["content"]
+        header = {"x-csrf-token" : meta}
+        data = s.post(url, headers=header, data=condition).json()
+        stock_list = data["data"]
+        print(stock_list)
+    return jsonify(stock_list)
+
 @app.route('/api/SwingStockScanner', methods=['GET'])
 def swing_scanner_data():
     url = "https://chartink.com/screener/process"
